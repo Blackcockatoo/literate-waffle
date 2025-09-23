@@ -1,0 +1,13 @@
+pair,mode,rotation,zeros_per_rotation
+Red60-Blue60,sum10_zero,0,5
+Red60-Blue60,bithex_zero,10,7
+Red60-Black60,sum10_zero,12,4
+Red60-Black60,bithex_zero,15,6
+Black60-Blue60,sum10_zero,24,3
+Black60-Blue60,bithex_zero,6,8
+Blue60-Lukus60,sum10_zero,30,4
+Blue60-Lukus60,bithex_zero,8,5
+Black60-Lukus60,sum10_zero,45,2
+Black60-Lukus60,bithex_zero,14,9
+Red60-Lukus60,sum10_zero,59,6
+Red60-Lukus60,bithex_zero,2,7

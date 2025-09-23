@@ -1,0 +1,7 @@
+pair,mode,rotation,position,zero_flag
+Red60-Blue60,bithex_zero,0,2,1
+Red60-Black60,bithex_zero,12,15,0
+Black60-Blue60,bithex_zero,24,22,1
+Blue60-Lukus60,bithex_zero,30,28,0
+Black60-Lukus60,bithex_zero,45,35,1
+Red60-Lukus60,bithex_zero,59,50,0

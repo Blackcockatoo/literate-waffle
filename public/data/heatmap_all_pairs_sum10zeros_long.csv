@@ -1,0 +1,8 @@
+pair,mode,rotation,position,zero_flag
+Red60-Blue60,sum10_zero,0,1,1
+Red60-Blue60,sum10_zero,0,5,0
+Red60-Black60,sum10_zero,12,10,1
+Black60-Blue60,sum10_zero,24,20,0
+Blue60-Lukus60,sum10_zero,30,25,1
+Black60-Lukus60,sum10_zero,45,40,0
+Red60-Lukus60,sum10_zero,59,55,1
