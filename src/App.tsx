@@ -12,7 +12,8 @@ import {
   ModeOption,
   PairOption,
   EnergyRow,
-  HeatmapRow
+  HeatmapRow,
+  SequenceKey
 } from './data/loaders';
 
 const SVG_WIDTH = 900;
@@ -28,24 +29,39 @@ const App: React.FC = () => {
   const [energyRows, setEnergyRows] = React.useState<EnergyRow[]>([]);
   const [loading, setLoading] = React.useState<boolean>(true);
   const [error, setError] = React.useState<string | null>(null);
+  const [sequenceError, setSequenceError] = React.useState<string | null>(null);
 
   const svgRef = React.useRef<SVGSVGElement | null>(null);
 
   React.useEffect(() => {
+    let isActive = true;
     setLoading(true);
     Promise.all([loadHeatmapData(), loadEnergyData()])
       .then(([heatmap, energy]) => {
+        if (!isActive) {
+          return;
+        }
         setHeatmapRows(heatmap);
         setEnergyRows(energy);
         setError(null);
       })
       .catch((err: unknown) => {
+        if (!isActive) {
+          return;
+        }
         const message = err instanceof Error ? err.message : 'Unable to load datasets.';
         setError(message);
       })
       .finally(() => {
+        if (!isActive) {
+          return;
+        }
         setLoading(false);
       });
+
+    return () => {
+      isActive = false;
+    };
   }, []);
 
   React.useEffect(() => {
@@ -98,7 +114,25 @@ const App: React.FC = () => {
     return match ? match.zeros_per_rotation : null;
   }, [energyForSelection, rotation]);
 
-  const sequenceKeys = React.useMemo(() => getSequenceKeysForPair(pair), [pair]);
+  const sequenceInfo = React.useMemo(() => {
+    try {
+      return {
+        keys: getSequenceKeysForPair(pair),
+        error: null as string | null
+      };
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : 'Unable to resolve the selected sequence pair.';
+      const fallback: SequenceKey[] = ['Lukus60', 'Lukus60'];
+      return { keys: fallback, error: message };
+    }
+  }, [pair]);
+
+  React.useEffect(() => {
+    setSequenceError(sequenceInfo.error);
+  }, [sequenceInfo.error]);
+
+  const sequenceKeys = sequenceInfo.keys;
 
   const handlePairChange = (nextPair: PairOption) => {
     setPair(nextPair);
@@ -194,6 +228,15 @@ const App: React.FC = () => {
           recommendedRotation={recommendedEnergy?.rotation ?? null}
           recommendedZeros={recommendedEnergy?.zeros_per_rotation ?? null}
         />
+
+        {sequenceError && (
+          <div className="rounded-lg border border-amber-500/50 bg-amber-500/10 p-4 text-amber-200" role="status">
+            <p className="font-semibold">{sequenceError}</p>
+            <p className="text-sm text-amber-200/80">
+              Double-check the configured pair names or update the available sequences in loaders.ts.
+            </p>
+          </div>
+        )}
 
         {error ? (
           <div className="rounded-lg border border-red-500/40 bg-red-500/10 p-6 text-red-200">
