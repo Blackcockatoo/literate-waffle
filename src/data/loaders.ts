@@ -54,6 +54,10 @@ export const MODE_OPTIONS: ModeOption[] = ['sum10_zero', 'bithex_zero'];
 
 type ParsedRow = Record<string, unknown>;
 
+function isSequenceKey(value: string): value is SequenceKey {
+  return Object.prototype.hasOwnProperty.call(SEQUENCES, value);
+}
+
 function fetchCsvRows(path: string): Promise<ParsedRow[]> {
   return fetch(path)
     .then((response) => {
@@ -71,12 +75,16 @@ function fetchCsvRows(path: string): Promise<ParsedRow[]> {
             skipEmptyLines: true,
             complete: (results: ParseResult<ParsedRow>) => {
               if (results.errors.length > 0) {
-                reject(results.errors[0]);
+                const { message, row } = results.errors[0];
+                const location = typeof row === 'number' ? ` at row ${row + 1}` : '';
+                reject(new Error(`Failed to parse ${path}${location}: ${message}`));
                 return;
               }
               resolve(results.data as ParsedRow[]);
             },
-            error: (error: Error) => reject(error)
+            error: (error: Error) => {
+              reject(new Error(`Failed to parse ${path}: ${error.message}`));
+            }
           });
         })
     );
@@ -156,6 +164,11 @@ export function loadEnergyData(): Promise<EnergyRow[]> {
 }
 
 export function getSequenceKeysForPair(pair: PairOption): SequenceKey[] {
-  const parts = pair.split('-') as SequenceKey[];
-  return parts.map((part) => (part in SEQUENCES ? part : 'Lukus60'));
+  const parts = pair.split('-').map((part) => part.trim());
+  return parts.map((part) => {
+    if (isSequenceKey(part)) {
+      return part;
+    }
+    throw new Error(`Unknown sequence identifier "${part}" for pair "${pair}".`);
+  });
 }

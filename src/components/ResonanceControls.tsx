@@ -46,8 +46,14 @@ const ResonanceControls: React.FC<ResonanceControlsProps> = ({
     <div className="w-full rounded-xl bg-slate-800/70 p-4 backdrop-blur">
       <div className="flex flex-col gap-4 md:flex-row md:items-end">
         <div className="flex flex-1 flex-col gap-2">
-          <label className="text-sm font-semibold uppercase tracking-wide text-slate-300">Pair</label>
+          <label
+            htmlFor="pair-select"
+            className="text-sm font-semibold uppercase tracking-wide text-slate-300"
+          >
+            Pair
+          </label>
           <select
+            id="pair-select"
             value={pair}
             onChange={handlePairChange}
             className="rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-slate-100 focus:border-blue-400 focus:outline-none"
@@ -61,8 +67,14 @@ const ResonanceControls: React.FC<ResonanceControlsProps> = ({
           </select>
         </div>
         <div className="flex flex-1 flex-col gap-2">
-          <label className="text-sm font-semibold uppercase tracking-wide text-slate-300">Mode</label>
+          <label
+            htmlFor="mode-select"
+            className="text-sm font-semibold uppercase tracking-wide text-slate-300"
+          >
+            Mode
+          </label>
           <select
+            id="mode-select"
             value={mode}
             onChange={handleModeChange}
             className="rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-slate-100 focus:border-blue-400 focus:outline-none"
@@ -76,7 +88,12 @@ const ResonanceControls: React.FC<ResonanceControlsProps> = ({
           </select>
         </div>
         <div className="flex flex-1 flex-col gap-2">
-          <label className="text-sm font-semibold uppercase tracking-wide text-slate-300">Rotation</label>
+          <label
+            htmlFor="rotation-slider"
+            className="text-sm font-semibold uppercase tracking-wide text-slate-300"
+          >
+            Rotation (6° steps)
+          </label>
           <div className="flex flex-col gap-2">
             <input
               type="range"
@@ -86,8 +103,17 @@ const ResonanceControls: React.FC<ResonanceControlsProps> = ({
               value={rotation}
               onChange={handleRotationChange}
               className="w-full"
+              id="rotation-slider"
+              aria-valuetext={`${rotation} steps (${rotation * 6} degrees)`}
+              aria-describedby="rotation-helper rotation-readout"
             />
-            <div className="flex items-center justify-between text-xs uppercase tracking-wide text-slate-400">
+            <p className="text-xs text-slate-500" id="rotation-helper">
+              Adjust the compass orientation in 60 increments around the mandala.
+            </p>
+            <div
+              className="flex items-center justify-between text-xs uppercase tracking-wide text-slate-400"
+              id="rotation-readout"
+            >
               <span>{rotation} steps</span>
               <span>{rotation * 6}&deg;</span>
             </div>
